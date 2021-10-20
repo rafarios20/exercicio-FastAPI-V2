@@ -8,4 +8,4 @@ class Prod(Base):
     id = Column(Integer, primary_key=True, index=True)
     produto = Column(String)
     valor = Column(Float)
-    qtde = Column(String)
+    quantidade = Column(Integer)

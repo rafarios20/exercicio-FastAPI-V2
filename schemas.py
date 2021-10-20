@@ -5,19 +5,19 @@ class ProdutoBaseSchema(BaseModel):
     id: int
     produto: str
     valor: float
-    quantidade: str
+    quantidade: int
 
 
 class CreateProdSchema(ProdutoBaseSchema):
     produto: str = ""
     valor: float = ""
-    quantidade: str = ""
+    quantidade: int = ""
 
 
 class UpdateProdSchema(ProdutoBaseSchema):
     produto: str = ""
     valor: float = ""
-    quantidade: str = ""
+    quantidade: int = ""
 
 
 class ProdSchema(ProdutoBaseSchema):
