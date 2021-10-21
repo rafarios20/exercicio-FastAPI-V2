@@ -2,7 +2,6 @@ from pydantic import BaseModel
 
 
 class ProdutoBaseSchema(BaseModel):
-    id: int
     produto: str
     valor: float
     quantidade: int
