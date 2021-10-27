@@ -1,4 +1,5 @@
 anyio==3.3.3
+appdotenv==1.0.1
 asgiref==3.4.1
 atomicwrites==1.4.0
 attrs==21.2.0
@@ -6,8 +7,11 @@ click==8.0.3
 colorama==0.4.4
 contextlib2==21.6.0
 datatypes==0.2.6
+dotenvy==0.2.0
+env==0.1.0
 fastapi==0.70.0
 functions==0.7.0
+future==0.18.2
 greenlet==1.1.2
 h11==0.12.0
 idna==3.3
@@ -19,6 +23,7 @@ py==1.10.0
 pydantic==1.8.2
 pyparsing==2.4.7
 pytest==6.2.5
+python-dotenv==0.19.1
 schema==0.7.4
 schemas==0.7.1
 sniffio==1.2.0
