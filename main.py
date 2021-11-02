@@ -1,4 +1,6 @@
 from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.responses import RedirectResponse
+from fastapi_simple_security import api_key_security, api_key_router
 from sqlalchemy.orm import Session
 from crud import (
     create_prod,
@@ -28,8 +30,21 @@ def get_db() -> Generator:
 
 app = FastAPI()
 
+app.include_router(api_key_router, prefix="/auth", tags=["_auth"])
 
-@app.get("/produtos/", status_code=status.HTTP_200_OK, )
+
+@app.get("/secure", dependencies=[Depends(api_key_security)])
+async def secure_endpoint():
+    return {"message": "Chave está funcionando!!"}
+
+
+@app.get("/", tags=["Home"])
+async def root():
+    response = RedirectResponse(url='/docs')
+    return response
+
+
+@app.get("/produtos/", status_code=status.HTTP_200_OK, tags=["Procurar todos os produtos"], dependencies=[Depends(api_key_security)])
 def get_all_products(db: Session = Depends(get_db)) -> Generator:
     if result := retrieve_all_products(db):
         return result
@@ -40,7 +55,7 @@ def get_all_products(db: Session = Depends(get_db)) -> Generator:
     )
 
 
-@app.get("/produtos/{id_produto}", status_code=status.HTTP_200_OK)
+@app.get("/produtos/{id_produto}", status_code=status.HTTP_200_OK, tags=["Procurar por um produto"], dependencies=[Depends(api_key_security)])
 def get_produto(id_produto: int, db: Session = Depends(get_db)) -> ProdType:
     if result := retrieve_product(db, id_produto):
         return result
@@ -51,7 +66,7 @@ def get_produto(id_produto: int, db: Session = Depends(get_db)) -> ProdType:
     )
 
 
-@app.post("/produtos/", status_code=status.HTTP_201_CREATED, )
+@app.post("/produtos/", status_code=status.HTTP_201_CREATED, tags=["Inserir um produto"], dependencies=[Depends(api_key_security)])
 def post_product(produto: CreateProdSchema, db: Session = Depends(get_db), ) -> ProdType:
     if result := create_prod(db, produto):
         return result
@@ -61,7 +76,7 @@ def post_product(produto: CreateProdSchema, db: Session = Depends(get_db), ) -> 
     )
 
 
-@app.put("/produtos/{id_produto}", status_code=status.HTTP_201_CREATED, )
+@app.put("/produtos/{id_produto}", status_code=status.HTTP_201_CREATED, tags=["Atualizar um produto"], dependencies=[Depends(api_key_security)])
 def put_product(id_produto: int, produto: UpdateProdSchema, db: Session = Depends(get_db), ) -> ProdType:
     if result := update_product(
             db, id_produto, {key: value for key, value in produto if value}
@@ -74,7 +89,7 @@ def put_product(id_produto: int, produto: UpdateProdSchema, db: Session = Depend
     )
 
 
-@app.delete("/produtos/{id_produto}", status_code=status.HTTP_204_NO_CONTENT)
+@app.delete("/produtos/{id_produto}", status_code=status.HTTP_204_NO_CONTENT, tags=["Remover um produto"], dependencies=[Depends(api_key_security)])
 def delete_produto(id_produto: int, db: Session = Depends(get_db)) -> None:
     if not remove_product(db, id_produto):
         raise HTTPException(
